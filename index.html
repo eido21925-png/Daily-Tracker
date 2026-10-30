@@ -16,7 +16,8 @@
         
         /* هنا ربطنا الخلفية بالصورة اللي رفعتها bg.jpg مع طبقة تغميق خفيفة عشان الكلام يكون واضح */
         .app-bg {
-            background-image: linear-gradient(rgba(11, 19, 41, 0.4), rgba(11, 19, 41, 0.4)), url('bg.jpg');
+            /* قللنا التغميق من 0.85 لـ 0.35 عشان الصورة تظهر بوضوح وبدون ضبابة */
+            background-image: linear-gradient(rgba(11, 19, 41, 0.35), rgba(11, 19, 41, 0.35)), url('bg.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
