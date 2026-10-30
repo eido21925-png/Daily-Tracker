@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Goals & Habits Tracker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        
+        /* خلفية واضحة ومضيئة مع تدرجات عصرية وخطوط شبكية فخمة */
+        .app-bg {
+            background-color: #0b1329;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.25) 0%, transparent 40%),
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        .wide-card {
+            background: rgba(30, 41, 59, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+        }
+        .wide-card:hover {
+            border-color: rgba(56, 189, 248, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -8px rgba(56, 189, 248, 0.3);
+            background: rgba(30, 41, 59, 0.98);
+        }
+    </style>
+</head>
+<body class="app-bg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- Top Header Navigation -->
+    <header class="max-w-5xl mx-auto w-full p-4 md:p-6">
+        <div class="glass-panel rounded-3xl p-5 md:p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-sky-500/30">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-sky-200 to-sky-400">Daily Goals Tracker</h1>
+                    <p class="text-xs font-bold text-sky-400 tracking-wider mt-0.5">Created by Omar Eid</p>
+                </div>
+            </div>
+
+            <!-- Navigation Breadcrumb & Back -->
+            <div class="flex items-center gap-3">
+                <span id="breadcrumbText" class="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-sky-300">شهور السنة</span>
+                <button id="backBtn" onclick="goBack()" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md">
+                    <i class="fa-solid fa-arrow-right"></i> رجوع
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto w-full px-4 md:px-6 flex-grow pb-12">
+
+        <!-- VIEW 1: MONTHS WIDE LIST -->
+        <div id="monthsView" class="space-y-4">
+            <div class="flex flex-col gap-3.5" id="monthsGrid">
+                <!-- Months Cards JS Generated -->
+            </div>
+        </div>
+
+        <!-- VIEW 2: DAYS WIDE LIST -->
+        <div id="daysView" class="hidden space-y-4">
+            <div class="flex flex-col gap-3" id="daysGrid">
+                <!-- Days Cards JS Generated -->
+            </div>
+        </div>
+
+        <!-- VIEW 3: DAY GOALS LIST -->
+        <div id="goalsView" class="hidden space-y-6">
+            <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
+                
+                <!-- Day Header Stats -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-700/60 pb-5">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white" id="selectedDayTitle">أهداف اليوم</h2>
+                        <span class="text-xs text-slate-300 font-medium" id="selectedDaySubtitle">متابعة دقيقة وتقييم دوري للإنجاز</span>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-slate-900/90 px-5 py-3 rounded-2xl border border-slate-700 shadow-inner">
+                        <span class="text-xs font-bold text-slate-300">معدل الإنجاز:</span>
+                        <span class="text-xl font-black text-sky-400" id="dayProgressPercent">0%</span>
+                    </div>
+                </div>
+
+                <!-- Goals List Container -->
+                <div class="space-y-3.5" id="goalsListContainer">
+                    <!-- Goals Items JS Generated -->
+                </div>
+
+                <!-- Add Custom Goal Form -->
+                <div class="pt-5 border-t border-slate-700/60 flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="customGoalInput" placeholder="أضف هدفاً إضافياً مخصصاً لهذا اليوم..." class="flex-grow bg-slate-900/90 border border-slate-700 rounded-2xl px-4 py-3.5 text-xs md:text-sm text-white outline-none focus:border-sky-500 transition-all shadow-inner">
+                    <button onclick="addCustomGoal()" class="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold px-6 py-3.5 rounded-2xl text-xs md:text-sm transition-all shadow-lg shadow-sky-600/20 flex items-center justify-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i> إضافة الهدف
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-6 text-center text-xs text-slate-300 border-t border-slate-800/80 bg-slate-950/60 font-semibold">
+        Daily Habits & Goals Tracker &copy; 2026 - Created by Omar Eid
+    </footer>
+
+    <!-- Application Script Logic -->
+    <script>
+        const monthNames = [
+            'يناير (January)', 'فبراير (February)', 'مارس (March)', 'أبريل (April)',
+            'مايو (May)', 'يونيو (June)', 'يوليو (July)', 'أغسطس (August)',
+            'سبتمبر (September)', 'أكتوبر (October)', 'نوفمبر (November)', 'ديسمبر (December)'
+        ];
+
+        const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        const defaultHabits = [
+            'صلاة الفجر',
+            'الصلوات الأربعة',
+            'قيام الليل',
+            'سماع درس',
+            'مذاكرة ساعتين أو أكثر',
+            'التمارين اليومية'
+        ];
+
+        let trackerData = JSON.parse(localStorage.getItem('my_daily_tracker_data')) || {};
+        let currentMonth = null;
+        let currentDay = null;
+
+        function getDayData(m, d) {
+            const key = `${m}_${d}`;
+            if (!trackerData[key]) {
+                trackerData[key] = defaultHabits.map(title => ({ title: title, status: 'missed', isCustom: false }));
+            }
+            return trackerData[key];
+        }
+
+        function saveData() {
+            localStorage.setItem('my_daily_tracker_data', JSON.stringify(trackerData));
+        }
+
+        function calculateDayPercent(m, d) {
+            const goals = getDayData(m, d);
+            const activeGoals = goals.filter(g => g.status !== 'cancel');
+            if (activeGoals.length === 0) return 100;
+
+            const doneGoals = activeGoals.filter(g => g.status === 'done').length;
+            return Math.round((doneGoals / activeGoals.length) * 100);
+        }
+
+        function calculateMonthPercent(m) {
+            const totalDays = daysInMonths[m];
+            let sumPercent = 0;
+            for (let d = 1; d <= totalDays; d++) {
+                sumPercent += calculateDayPercent(m, d);
+            }
+            return Math.round(sumPercent / totalDays);
+        }
+
+        function showMonthsView() {
+            currentMonth = null;
+            currentDay = null;
+            document.getElementById('monthsView').classList.remove('hidden');
+            document.getElementById('daysView').classList.add('hidden');
+            document.getElementById('goalsView').classList.add('hidden');
+            document.getElementById('backBtn').classList.add('hidden');
+            document.getElementById('breadcrumbText').innerText = "شهور السنة";
+            renderMonths();
+        }
+
+        function showDaysView(m) {
+            currentMonth = m;
+            currentDay = null;
+            document.getElementById('monthsView').classList.add('hidden');
+            document.getElementById('daysView').classList.remove('hidden');
+            document.getElementById('goalsView').classList.add('hidden');
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('breadcrumbText').innerText = `${monthNames[m]} > أيام الشهر`;
+            renderDays();
+        }
+
+        function showGoalsView(d) {
+            currentDay = d;
+            document.getElementById('monthsView').classList.add('hidden');
+            document.getElementById('daysView').classList.add('hidden');
+            document.getElementById('goalsView').classList.remove('hidden');
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('breadcrumbText').innerText = `${monthNames[currentMonth]} > يوم ${d}`;
+            
+            document.getElementById('selectedDayTitle').innerText = `أهداف يوم ${d} - ${monthNames[currentMonth]}`;
+            renderGoals();
+        }
+
+        function goBack() {
+            if (currentDay !== null) {
+                showDaysView(currentMonth);
+            } else if (currentMonth !== null) {
+                showMonthsView();
+            }
+        }
+
+        function renderMonths() {
+            const grid = document.getElementById('monthsGrid');
+            grid.innerHTML = '';
+
+            monthNames.forEach((name, index) => {
+                const percent = calculateMonthPercent(index);
+                const card = document.createElement('div');
+                card.onclick = () => showDaysView(index);
+                card.className = "wide-card p-4 md:p-5 rounded-2xl cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4";
+                
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-slate-800 text-sky-400 border border-slate-700">#${index + 1}</span>
+                        <h3 class="font-extrabold text-white text-base md:text-lg">${name}</h3>
+                    </div>
+                    <div class="flex items-center gap-4 w-full sm:w-72 justify-between">
+                        <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-700/50">
+                            <div class="bg-gradient-to-r from-sky-500 to-indigo-500 h-2.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                        <span class="text-xs font-black px-3 py-1.5 rounded-xl whitespace-nowrap ${percent >= 70 ? 'bg-emerald-950/90 text-emerald-400 border border-emerald-500/30' : percent >= 40 ? 'bg-amber-950/90 text-amber-400 border border-amber-500/30' : 'bg-red-950/90 text-red-400 border border-red-500/30'}">${percent}%</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderDays() {
+            const grid = document.getElementById('daysGrid');
+            grid.innerHTML = '';
+            const totalDays = daysInMonths[currentMonth];
+
+            for (let d = 1; d <= totalDays; d++) {
+                const percent = calculateDayPercent(currentMonth, d);
+                const card = document.createElement('div');
+                card.onclick = () => showGoalsView(d);
+                card.className = "wide-card p-3.5 md:p-4 rounded-2xl cursor-pointer flex items-center justify-between gap-4";
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/40 flex items-center justify-center text-sky-400 font-black text-base">
+                            ${d}
+                        </div>
+                        <span class="font-bold text-white text-sm">يوم رقم ${d} من ${monthNames[currentMonth]}</span>
+                    </div>
+                    <div class="flex items-center gap-4 w-48 sm:w-64 justify-between">
+                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-700/55 hidden sm:block">
+                            <div class="bg-gradient-to-r from-sky-500 to-indigo-500 h-2 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                        <span class="text-xs font-black px-3 py-1.5 rounded-xl whitespace-nowrap ${percent >= 70 ? 'bg-emerald-950/90 text-emerald-400 border border-emerald-500/30' : percent >= 40 ? 'bg-amber-950/90 text-amber-400 border border-amber-500/30' : 'bg-red-950/90 text-red-400 border border-red-500/30'}">${percent}%</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        function renderGoals() {
+            const container = document.getElementById('goalsListContainer');
+            container.innerHTML = '';
+            const goals = getDayData(currentMonth, currentDay);
+            const dayPercent = calculateDayPercent(currentMonth, currentDay);
+
+            document.getElementById('dayProgressPercent').innerText = `${dayPercent}%`;
+
+            goals.forEach((goal, idx) => {
+                const item = document.createElement('div');
+                item.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-700 hover:border-slate-600 transition-all";
+
+                let selectBg = 'bg-red-950/80 text-red-400 border-red-500/30';
+                if (goal.status === 'done') selectBg = 'bg-emerald-950/80 text-emerald-400 border-emerald-500/30';
+                if (goal.status === 'cancel') selectBg = 'bg-slate-800 text-slate-300 border-slate-600';
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 flex-grow">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm ${goal.status === 'done' ? 'bg-emerald-500/20 text-emerald-400' : goal.status === 'cancel' ? 'bg-slate-800 text-slate-400' : 'bg-red-500/20 text-red-400'}">
+                            <i class="fa-solid ${goal.status === 'done' ? 'fa-check' : goal.status === 'cancel' ? 'fa-ban' : 'fa-xmark'}"></i>
+                        </div>
+                        <span class="text-xs md:text-sm font-bold text-slate-200 ${goal.status === 'cancel' ? 'line-through text-slate-400' : ''}">${goal.title}</span>
+                    </div>
+
+                    <div class="flex items-center gap-2.5 justify-end">
+                        <select onchange="updateGoalStatus(${idx}, this.value)" class="text-xs font-black px-3 py-2 rounded-xl border outline-none cursor-pointer transition-all ${selectBg}">
+                            <option value="done" ${goal.status === 'done' ? 'selected' : ''}>Done (تم)</option>
+                            <option value="missed" ${goal.status === 'missed' ? 'selected' : ''}>Missed (لم يتم)</option>
+                            <option value="cancel" ${goal.status === 'cancel' ? 'selected' : ''}>Cancel (ملغي)</option>
+                        </select>
+
+                        ${goal.isCustom ? `<button onclick="deleteCustomGoal(${idx})" class="text-slate-400 hover:text-red-400 p-2 rounded-xl hover:bg-red-950/30 transition-all"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateGoalStatus(index, newStatus) {
+            const goals = getDayData(currentMonth, currentDay);
+            goals[index].status = newStatus;
+            saveData();
+            renderGoals();
+        }
+
+        function addCustomGoal() {
+            const input = document.getElementById('customGoalInput');
+            const title = input.value.trim();
+            if (!title) return;
+
+            const goals = getDayData(currentMonth, currentDay);
+            goals.push({ title: title, status: 'missed', isCustom: true });
+            saveData();
+            input.value = '';
+            renderGoals();
+        }
+
+        function deleteCustomGoal(index) {
+            const goals = getDayData(currentMonth, currentDay);
+            goals.splice(index, 1);
+            saveData();
+            renderGoals();
+        }
+
+        showMonthsView();
+    </script>
+</body>
+</html>
